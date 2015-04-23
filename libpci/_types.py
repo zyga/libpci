@@ -22,7 +22,7 @@
 
 import ctypes
 import enum
-import sys
+import os
 
 # Hand-crafted enum definitions
 
@@ -122,7 +122,7 @@ pci_param._fields_ = [
 
 
 # XXX: this can be uint32 as well, depending on configuration
-if 'x86_64' in sys.implementation._multiarch:
+if os.uname().machine in ('x86_64', 'aarch64', 'ppcel64'):
     pciaddr_t = ctypes.c_uint64
 else:
     pciaddr_t = ctypes.c_uint32

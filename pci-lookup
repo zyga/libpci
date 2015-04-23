@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+# encoding: utf-8
+#
+# Copyright 2015 Canonical Ltd.
+#
+# Written by:
+#   Zygmunt Krynicki <zygmunt.krynicki@canonical.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""Example application using libpci."""
+
+import guacamole
+
+import libpci
+
+
+class hex_int(int):
+
+    """A hexadecimal integer type."""
+
+    def __new__(cls, value, base=16):
+        """Create a new hexadecimal integer from a given value."""
+        return super().__new__(cls, value, base)
+
+
+class PciLookup(guacamole.Command):
+
+    """
+    Command for looking up names in the PCI database.
+
+    Look-up names from the PCI database.
+    @EPILOG@
+
+    NOTE: All identifiers must be passed as hexadecimal integers.
+    """
+
+    name = 'pci-lookup'
+
+    def invoked(self, ctx):
+        """Execute pci-lookup."""
+        with libpci.LibPCI() as pci:
+            # Apply command line options
+            pci.flag_numeric = ctx.args.numeric
+            pci.flag_no_numbers = ctx.args.no_numbers
+            pci.flag_mixed = ctx.args.mixed
+            pci.flag_network = ctx.args.network
+            pci.flag_skip_locak = ctx.args.skip_local
+            pci.flag_cache = ctx.args.cache
+            pci.flag_refresh_cache = ctx.args.refresh_cache
+            # Perform the lookup
+            if (ctx.args.vendor_id is not None
+                    and ctx.args.device_id is not None):
+                print("vendor-id:   {0:#06x}".format(ctx.args.vendor_id))
+                print("vendor-name: {0}".format(
+                    pci.lookup_vendor_name(
+                        vendor_id=ctx.args.vendor_id)))
+                print("device-id:   {0:#06x}".format(ctx.args.device_id))
+                print("device-name: {0}".format(
+                    pci.lookup_device_name(
+                        vendor_id=ctx.args.vendor_id,
+                        device_id=ctx.args.device_id)))
+            elif ctx.args.vendor_id is not None:
+                print("vendor-id:   {0:#06x}".format(ctx.args.vendor_id))
+                print("vendor-name: {0}".format(
+                    pci.lookup_vendor_name(
+                        vendor_id=ctx.args.vendor_id)))
+
+    def register_arguments(self, parser):
+        """Register arguments for pci-lookup."""
+        parser.add_argument(
+            "vendor_id", metavar='vendor-id', type=hex_int,
+            help="hexadecimal vendor identifier")
+        parser.add_argument(
+            "device_id", metavar='device-id', type=hex_int, nargs='?',
+            help="hexadecimal device identifier")
+        group = parser.add_argument_group("lookup options")
+        group.add_argument(
+            "--numeric", action='store_true',
+            help="generate numeric names")
+        group.add_argument(
+            "--no-numbers", action='store_true',
+            help="don't generate numeric names for unknown IDs")
+        group.add_argument(
+            "--mixed", action='store_true',
+            help="use both names and numbers")
+        group.add_argument(
+            "--network", action='store_true',
+            help="use network access to lookup unknown IDs")
+        group.add_argument(
+            "--skip-local", action='store_true',
+            help="skip local database when performing lookups")
+        group.add_argument(
+            "--cache", action='store_true',
+            help="use local cache")
+        group.add_argument(
+            "--refresh-cache", action='store_true',
+            help="refresh cache during the next lookup")
+
+
+if __name__ == "__main__":
+    PciLookup().main()

@@ -33,7 +33,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='libpci',
-    version='0.1',
+    version='0.1.1',
     description='Pure-Python, high-level bindings to libpci',
     long_description=readme + '\n\n' + history,
     author='Zygmunt Krynicki',

@@ -38,7 +38,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author='Zygmunt Krynicki',
     author_email='zygmunt.krunicki@canonical.com',
-    url='https://github.com/zyga/python-libpci',
+    url='https://github.com/zyga/libpci',
     packages=['libpci'],
     package_dir={'libpci': 'libpci'},
     include_package_data=True,

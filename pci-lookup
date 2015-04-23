@@ -40,7 +40,7 @@ class PciLookup(guacamole.Command):
     """
     Command for looking up names in the PCI database.
 
-    Look-up names from the PCI database.
+    Look up names from the PCI database.
     @EPILOG@
 
     NOTE: All identifiers must be passed as hexadecimal integers.

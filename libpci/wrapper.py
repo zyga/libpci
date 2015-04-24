@@ -185,7 +185,7 @@ class LibPCI(object):
             PCI vendor identifier
         :ptype vendor_id:
             int
-        :param deice_id:
+        :param device_id:
             PCI device identifier
         :ptype device_id:
             int

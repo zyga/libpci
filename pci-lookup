@@ -78,6 +78,39 @@ class PciLookupDevice(guacamole.Command):
             help="hexadecimal device identifier")
 
 
+class PciLookupSubsystemDevice(guacamole.Command):
+
+    """Look up PCI subsystem device name."""
+
+    name = 'subsystem-device'
+
+    def invoked(self, ctx):
+        """Execute 'pci-lookup subsystem-device'."""
+        print("vendor-id:   {0:#06x}".format(ctx.args.vendor_id))
+        print("device-id:   {0:#06x}".format(ctx.args.device_id))
+        print("subvendor-id:{0:#06x}".format(ctx.args.subvendor_id))
+        print("subdevice-id:{0:#06x}".format(ctx.args.subdevice_id))
+        print("subsystem-device-name: {0}".format(
+            ctx.pci.lookup_subsystem_device_name(
+                ctx.args.vendor_id, ctx.args.device_id,
+                ctx.args.subvendor_id, ctx.args.subdevice_id)))
+
+    def register_arguments(self, parser):
+        """Register arguments for 'pci-lookup device'."""
+        parser.add_argument(
+            "vendor_id", metavar='vendor-id', type=hex_int,
+            help="hexadecimal vendor identifier")
+        parser.add_argument(
+            "device_id", metavar='device-id', type=hex_int,
+            help="hexadecimal device identifier")
+        parser.add_argument(
+            "subvendor_id", metavar='subvendor-id', type=hex_int,
+            help="hexadecimal subvendor identifier")
+        parser.add_argument(
+            "subdevice_id", metavar='subdevice-id', type=hex_int,
+            help="hexadecimal subdevice identifier")
+
+
 class PciLookup(guacamole.Command):
 
     """
@@ -94,6 +127,7 @@ class PciLookup(guacamole.Command):
     sub_commands = (
         (None, PciLookupVendor),
         (None, PciLookupDevice),
+        (None, PciLookupSubsystemDevice),
     )
 
     def invoked(self, ctx):

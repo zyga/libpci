@@ -28,6 +28,7 @@ from libpci._functions import pci_cleanup
 from libpci._functions import pci_init
 from libpci._functions import pci_lookup_name1
 from libpci._functions import pci_lookup_name2
+from libpci._functions import pci_lookup_name4
 from libpci._types import pci_lookup_mode
 
 
@@ -203,4 +204,43 @@ class LibPCI(object):
         flags = self._flags | pci_lookup_mode.PCI_LOOKUP_DEVICE
         pci_lookup_name2(self._access, buf, ctypes.sizeof(buf), flags,
                          vendor_id, device_id)
+        return buf.value.decode("utf-8")
+
+    def lookup_subsystem_device_name(
+            self, vendor_id, device_id, subvendor_id, subdevice_id):
+        """
+        Lookup the name of a given subsystem device.
+
+        :param vendor_id:
+            PCI vendor identifier
+        :ptype vendor_id:
+            int
+        :param device_id:
+            PCI device identifier
+        :ptype device_id:
+            int
+        :param subvendor_id:
+            PCI subvendor identifier
+        :ptype subvendor_id:
+            int
+        :param device_id:
+            PCI subdevice identifier
+        :ptype subdevice_id:
+            int
+        :returns:
+            Name of the PCI subsystem device.
+
+        .. note::
+            Lookup respects various flag properties that impact the behavior
+            in case the name cannot be found in the local database. Refer to
+            the documentation of each of the ``flag_`` properties.
+        """
+        buf = ctypes.create_string_buffer(1024)
+        _logger.debug("Performing the lookup on vendor:device "
+                      "subvendor:subdevice %#06x:%#06x %#06x:%#06x",
+                      vendor_id, device_id, subvendor_id, subdevice_id)
+        flags = self._flags | pci_lookup_mode.PCI_LOOKUP_SUBSYSTEM
+        flags = self._flags | pci_lookup_mode.PCI_LOOKUP_DEVICE
+        pci_lookup_name4(self._access, buf, ctypes.sizeof(buf), flags,
+                         vendor_id, device_id, subvendor_id, subdevice_id)
         return buf.value.decode("utf-8")

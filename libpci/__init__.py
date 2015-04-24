@@ -21,6 +21,6 @@
 """Pure-python, high-level bindings to libpci."""
 
 __all__ = ('LibPCI',)
-__version__ = (0, 1, 1, 'dev', 0)
+__version__ = (0, 2, 0, 'dev', 0)
 
 from libpci.wrapper import LibPCI

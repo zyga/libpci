@@ -2,8 +2,6 @@
 Usage
 =====
 
-.. automodule:: libpci
-
 Reference
 =========
 
